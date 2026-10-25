@@ -15,7 +15,7 @@ os.makedirs(processed, exist_ok=True)
 report = os.path.join(carpeta_script, "..", "data", "report")
 os.makedirs(report, exist_ok=True)
 libros = []
-GUARDAR = False
+GUARDAR = True
 PRUEBA = True
 
 with open(ruta_HTML,  mode = 'r' , encoding="utf-8") as archivo:
@@ -75,28 +75,32 @@ else:
 
 
 # visual excel
-rp.to_excel(ruta_report, index=False)
-wb = load_workbook(ruta_report)
-ws = wb.active
-ws.column_dimensions['A'].width = 40
-ws.column_dimensions['B'].width = 15
-ws.column_dimensions['C'].width = 15
-ws.column_dimensions['D'].width = 15
-negritas = Font(bold= True)
-ws['A1'].font = negritas
-ws['B1'].font = negritas
-ws['C1'].font = negritas
-ws['D1'].font = negritas
-ws['E1'].font = negritas
-relleno = PatternFill(patternType='solid', fgColor='00FF3E' )
-rellenoR = PatternFill(patternType='solid', fgColor='FF0100' )
-cells = ws['E']
-for cell in cells:
-    E = cell.value
-    if E == "Subio":
-        cell.fill = relleno
-    elif E == "Bajo":
-        cell.fill = rellenoR
-    else:
-        ws['E']
-wb.save(ruta_report)
+
+if not rp.empty:
+    rp.to_excel(ruta_report, index=False)
+    wb = load_workbook(ruta_report)
+    ws = wb.active
+    ws.column_dimensions['A'].width = 40
+    ws.column_dimensions['B'].width = 15
+    ws.column_dimensions['C'].width = 15
+    ws.column_dimensions['D'].width = 15
+    negritas = Font(bold= True)
+    ws['A1'].font = negritas
+    ws['B1'].font = negritas
+    ws['C1'].font = negritas
+    ws['D1'].font = negritas
+    ws['E1'].font = negritas
+    relleno = PatternFill(patternType='solid', fgColor='00FF3E' )
+    rellenoR = PatternFill(patternType='solid', fgColor='FF0100' )
+    cells = ws['E']
+    for cell in cells:
+        E = cell.value
+        if E == "Subio":
+            cell.fill = relleno
+        elif E == "Bajo":
+            cell.fill = rellenoR
+        else:
+            ws['E']
+    wb.save(ruta_report)
+else:
+    print(f"Hoy {hoy} no hubo cambios en los precios ")
