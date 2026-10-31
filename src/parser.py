@@ -66,8 +66,6 @@ else:
             # print(r[r['Estado'] != 'Sin cambios']) # muestra los libros que cambiaron de precio
 rp= r[r['Estado'] != 'Sin cambios']
 
-if GUARDAR:
-    df.to_csv(ruta_final, index=False) # guarda el DataFrame en un archivo CSV
 if PRUEBA:
     ruta_report= os.path.join(report, "reporte_prueba.xlsx")
 else:
@@ -77,6 +75,8 @@ else:
 # visual excel
 
 if not rp.empty:
+    if GUARDAR:
+        df.to_csv(ruta_final, index=False) # guarda el DataFrame en un archivo CSV
     rp.to_excel(ruta_report, index=False)
     wb = load_workbook(ruta_report)
     ws = wb.active
