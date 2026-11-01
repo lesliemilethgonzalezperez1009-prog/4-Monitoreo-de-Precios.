@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 from email.message import EmailMessage
 import ssl
 import smtplib
-ruta_report = os.path.join("data", "report", "reporte_prueba.xlsx")
 def correo(ruta_report):
     load_dotenv()
     email_sender = os.getenv("EMAIL_SENDER")

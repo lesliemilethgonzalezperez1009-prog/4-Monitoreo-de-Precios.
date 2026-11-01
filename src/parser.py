@@ -17,7 +17,7 @@ report = os.path.join(carpeta_script, "..", "data", "report")
 os.makedirs(report, exist_ok=True)
 libros = []
 GUARDAR = True
-PRUEBA = True
+PRUEBA = False
 
 with open(ruta_HTML,  mode = 'r' , encoding="utf-8") as archivo:
     contenido = archivo.read()
