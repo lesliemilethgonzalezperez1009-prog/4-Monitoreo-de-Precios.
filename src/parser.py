@@ -5,6 +5,7 @@ import numpy as np
 from datetime import datetime
 from openpyxl import load_workbook
 from openpyxl.styles import Font,PatternFill
+from main import correo
 # carpeta script es la ruta del script actual, y ".." significa “la carpeta de arriba”:
 
 carpeta_script = os.path.dirname(os.path.abspath(__file__))
@@ -50,21 +51,21 @@ else:
     viejo = pd.read_csv(ruta)
     if viejo is not None:
         # df es el actual, viejo es el anterior
-        r = pd.merge(df, viejo, how='outer', on="title", suffixes=('_actual', '_anterior'))
+        r = pd.merge(df, viejo, how='outer', on="title", suffixes=('_current', '_previous'))
         if r is not None:
-            r['price_anterior'] = r['price_anterior']
-            r['price_actual'] = r['price_actual']
-            r['price_cambio'] = r['price_actual'] - r['price_anterior']
-            
+            r['price_previous'] = r['price_previous']
+            r['price_current'] = r['price_current']
+            r['price_change'] = r['price_current'] - r['price_previous']
+
             condicionales = [
-            r['price_cambio'] > 0, 
-            r['price_cambio'] < 0, 
-            r['price_cambio'] == 0
+            r['price_change'] > 0, 
+            r['price_change'] < 0, 
+            r['price_change'] == 0
             ]
-            etiqutas = ['Subio', 'Bajo', 'Sin cambios']
-            r['Estado'] = np.select(condicionales, etiqutas, default='Sin cambios')
-            # print(r[r['Estado'] != 'Sin cambios']) # muestra los libros que cambiaron de precio
-rp= r[r['Estado'] != 'Sin cambios']
+            etiqutas = ['increased', 'decreased', 'without change']
+            r['Status'] = np.select(condicionales, etiqutas, default='without change')
+            # print(r[r['Status'] != 'without change']) # muestra los libros que cambiaron de precio
+rp= r[r['Status'] != 'without change']
 
 if PRUEBA:
     ruta_report= os.path.join(report, "reporte_prueba.xlsx")
@@ -95,12 +96,13 @@ if not rp.empty:
     cells = ws['E']
     for cell in cells:
         E = cell.value
-        if E == "Subio":
+        if E == "increased":
             cell.fill = relleno
-        elif E == "Bajo":
+        elif E == "decreased":
             cell.fill = rellenoR
         else:
             ws['E']
     wb.save(ruta_report)
+    correo = correo(ruta_report)
 else:
     print(f"Hoy {hoy} no hubo cambios en los precios ")
