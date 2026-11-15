@@ -2,3 +2,6 @@
 .env
 __pycache__/
 data/raw/
+~$*.xlsx
+log.txt
+cls
